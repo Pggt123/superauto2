@@ -30,6 +30,19 @@ adelante = 0
 atras = 0
 parar = 0
 basic.forever(function () {
+    if (input.isGesture(Gesture.TiltLeft)) {
+        izquierda = 1
+    } else if (input.isGesture(Gesture.TiltRight)) {
+        derecha = 1
+    } else if (input.isGesture(Gesture.LogoUp)) {
+        adelante = 1
+    } else if (input.isGesture(Gesture.LogoDown)) {
+        atras = 1
+    } else if (input.isGesture(Gesture.Shake)) {
+        parar = 1
+    } else {
+    	
+    }
     if (maqueen.Ultrasonic(PingUnit.Centimeters) < 20) {
         adelante = 0
         maqueen.motorStop(maqueen.Motors.All)

@@ -1,53 +1,61 @@
-def on_logo_pressed():
-    pass
-input.on_logo_event(TouchButtonEvent.PRESSED, on_logo_pressed)
-
-def on_button_pressed_a():
-    while True:
-        maqueen.motor_run(maqueen.Motors.M1, maqueen.Dir.CW, 255)
-        maqueen.motor_run(maqueen.Motors.M2, maqueen.Dir.CCW, 255)
-input.on_button_pressed(Button.A, on_button_pressed_a)
-
-def on_logo_long_pressed():
-    while True:
-        maqueen.motor_run(maqueen.Motors.M1, maqueen.Dir.CW, 255)
-        maqueen.motor_run(maqueen.Motors.M2, maqueen.Dir.CCW, 255)
-input.on_logo_event(TouchButtonEvent.LONG_PRESSED, on_logo_long_pressed)
-
-def on_pin_pressed_p2():
-    while True:
-        maqueen.motor_run(maqueen.Motors.M1, maqueen.Dir.CW, 255)
-        maqueen.motor_run(maqueen.Motors.M2, maqueen.Dir.CCW, 255)
-input.on_pin_pressed(TouchPin.P2, on_pin_pressed_p2)
-
 def on_received_string(receivedString):
+    global izquierda, derecha, adelante, atras, parar
     if receivedString == "izquierda":
-        pass
+        izquierda = 1
     elif receivedString == "derecha":
-        pass
+        derecha = 1
     elif receivedString == "adelante":
-        pass
+        adelante = 1
     elif receivedString == "atras":
-        pass
+        atras = 1
     elif receivedString == "parar":
-        pass
+        parar = 1
     else:
         pass
 radio.on_received_string(on_received_string)
 
-def on_button_pressed_b():
-    while True:
-        maqueen.motor_run(maqueen.Motors.M1, maqueen.Dir.CCW, 255)
-        maqueen.motor_run(maqueen.Motors.M2, maqueen.Dir.CW, 255)
-input.on_button_pressed(Button.B, on_button_pressed_b)
-
-def on_pin_pressed_p1():
-    while True:
-        maqueen.motor_run(maqueen.Motors.M1, maqueen.Dir.CW, 255)
-        maqueen.motor_run(maqueen.Motors.M2, maqueen.Dir.CCW, 255)
-input.on_pin_pressed(TouchPin.P1, on_pin_pressed_p1)
-
+cronometrode = 0
+cornometroiz = 0
+parar = 0
+atras = 0
+adelante = 0
+izquierda = 0
+derecha = 0
 color = 0
 bucle = 0
 strip = neopixel.create(DigitalPin.P15, 4, NeoPixelMode.RGB)
 radio.set_group(47)
+derecha = 0
+izquierda = 0
+adelante = 0
+atras = 0
+parar = 0
+
+def on_forever():
+    global adelante, izquierda, derecha, atras, cornometroiz, cronometrode
+    if maqueen.ultrasonic(PingUnit.CENTIMETERS) < 20:
+        adelante = 0
+        maqueen.motor_stop(maqueen.Motors.ALL)
+    if izquierda == 1:
+        maqueen.motor_run(maqueen.Motors.M1, maqueen.Dir.CW, 255)
+        maqueen.motor_run(maqueen.Motors.M2, maqueen.Dir.CCW, 255)
+        izquierda = 0
+    elif derecha == 1:
+        maqueen.motor_run(maqueen.Motors.M1, maqueen.Dir.CCW, 255)
+        maqueen.motor_run(maqueen.Motors.M2, maqueen.Dir.CW, 255)
+        derecha = 0
+    elif adelante == 1:
+        maqueen.motor_run(maqueen.Motors.ALL, maqueen.Dir.CW, 255)
+        adelante = 0
+    elif atras == 1:
+        maqueen.motor_run(maqueen.Motors.ALL, maqueen.Dir.CCW, 255)
+        atras = 0
+    elif parar == 1:
+        maqueen.motor_stop(maqueen.Motors.ALL)
+        atras = 0
+    else:
+        pass
+    cornometroiz += -1
+    cronometrode += -1
+    basic.show_number(input.light_level())
+basic.forever(on_forever)
