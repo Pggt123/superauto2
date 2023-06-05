@@ -9,12 +9,20 @@ radio.onReceivedString(function (receivedString) {
         atras = 1
     } else if (receivedString == "parar") {
         parar = 1
+    } else if (receivedString == "temperatura") {
+        temperatura = input.temperature()
+        radio.sendNumber(input.temperature())
+    } else if (receivedString == "luz") {
+        luz = input.lightLevel()
+        radio.sendNumber(input.lightLevel())
     } else {
     	
     }
 })
 let cronometrode = 0
 let cornometroiz = 0
+let luz = 0
+let temperatura = 0
 let parar = 0
 let atras = 0
 let adelante = 0
